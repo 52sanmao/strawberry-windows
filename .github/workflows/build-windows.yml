@@ -211,14 +211,14 @@ jobs:
         run: makensis strawberry.nsi
 
       - name: Upload installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: StrawberrySetup
           path: build/StrawberrySetup*.exe
           retention-days: 30
 
       - name: Upload portable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Strawberry-portable
           path: |
