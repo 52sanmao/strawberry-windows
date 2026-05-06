@@ -34,8 +34,8 @@ jobs:
           dirs: ${{env.prefix_path_backslash}}\bin;C:\Windows;C:\Windows\system32;C:\Program Files\Git\bin;C:\Program Files\CMake\bin;C:\Program Files\GitHub CLI;C:\ProgramData\Chocolatey\bin;C:\Program Files (x86)\NSIS
 
       - name: Create downloads directory
-        shell: cmd
-        run: mkdir downloads
+        shell: bash
+        run: mkdir -p downloads
 
       - name: Download Windows MSVC dependencies
         shell: cmd
@@ -200,45 +200,25 @@ jobs:
         working-directory: build
         run: copy ..\COPYING .
 
-      - name: Download NSIS LockedList plugin
-        shell: cmd
-        working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
-
-      - name: Extract NSIS LockedList plugin
-        shell: cmd
-        working-directory: downloads
-        run: 7z x LockedList.zip
-
-      - name: Download NSIS Registry plugin
-        shell: cmd
-        working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
-
-      - name: Extract NSIS Registry plugin
-        shell: cmd
-        working-directory: downloads
-        run: 7z x Registry.zip
-
-      - name: Download NSIS Inetc plugin
-        shell: cmd
-        working-directory: downloads
-        run: curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
-
-      - name: Extract NSIS Inetc plugin
-        shell: cmd
-        working-directory: downloads
-        run: 7z x Inetc.zip
+      - name: Download NSIS plugins
+        shell: bash
+        run: |
+          cd downloads
+          curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip
+          curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip
+          curl -f -O -L https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip
+          7z x -y LockedList.zip
+          7z x -y Registry.zip
+          7z x -y Inetc.zip
 
       - name: Install NSIS plugins
-        shell: cmd
-        working-directory: downloads
+        shell: bash
         run: |
-          copy "Plugins\LockedList64.dll" "C:\Program Files (x86)\NSIS\Plugins\"
-          copy "Plugins\x86-unicode\LockedList.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
-          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\"
-          copy "Desktop\Plugin\registry.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
-          copy "Plugins\x86-unicode\INetC.dll" "C:\Program Files (x86)\NSIS\Plugins\x86-unicode\"
+          cp downloads/Plugins/LockedList64.dll "/c/Program Files (x86)/NSIS/Plugins/"
+          cp downloads/Plugins/x86-unicode/LockedList.dll "/c/Program Files (x86)/NSIS/Plugins/x86-unicode/"
+          cp downloads/Desktop/Plugin/registry.dll "/c/Program Files (x86)/NSIS/Plugins/"
+          cp downloads/Desktop/Plugin/registry.dll "/c/Program Files (x86)/NSIS/Plugins/x86-unicode/"
+          cp downloads/Plugins/x86-unicode/INetC.dll "/c/Program Files (x86)/NSIS/Plugins/x86-unicode/"
 
       - name: Download MSVC runtime
         shell: bash
